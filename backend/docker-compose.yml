@@ -1,0 +1,63 @@
+﻿version: '3.8'
+
+services:
+  # PostgreSQL数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: label_print_postgres
+    environment:
+      POSTGRES_USER: label_user
+      POSTGRES_PASSWORD: your_strong_password
+      POSTGRES_DB: label_system
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U label_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: label_print_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # 后端应用（开发模式）
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: label_print_backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://label_user:your_strong_password@postgres:5432/label_system
+      REDIS_URL: redis://redis:6379
+    volumes:
+      - ./app:/app/app
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
