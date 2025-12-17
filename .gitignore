@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿# Python
+=======
+# Python 相关
+>>>>>>> f7328e83990d76cfdc0c1e06fc7fcea90137b3f4
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,6 +10,7 @@ __pycache__/
 .Python
 env/
 venv/
+<<<<<<< HEAD
 ENV/
 env.bak/
 venv.bak/
@@ -23,10 +28,19 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # IDE
+=======
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# 编辑器文件
+>>>>>>> f7328e83990d76cfdc0c1e06fc7fcea90137b3f4
 .vscode/
 .idea/
 *.swp
 *.swo
+<<<<<<< HEAD
 *~
 
 # 环境变量
@@ -39,11 +53,14 @@ lerna-debug.log*
 # 日志
 logs/
 *.log
+=======
+>>>>>>> f7328e83990d76cfdc0c1e06fc7fcea90137b3f4
 
 # 系统文件
 .DS_Store
 Thumbs.db
 
+<<<<<<< HEAD
 # 测试覆盖率
 .coverage
 .coverage.*
@@ -78,3 +95,19 @@ target/
 
 # 项目特定
 server_print_output/
+=======
+# 日志文件
+*.log
+
+# 依赖文件
+node_modules/
+package-lock.json
+
+# 数据库文件
+*.db
+*.sqlite3
+
+# Bartender 相关
+*.btw
+*.btw.bak
+>>>>>>> f7328e83990d76cfdc0c1e06fc7fcea90137b3f4
