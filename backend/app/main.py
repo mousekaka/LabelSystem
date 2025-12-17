@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
+# 导入API路由
+from app.api import print as print_api
 
 
 @asynccontextmanager
@@ -65,10 +67,11 @@ async def root():
 @app.get("/health")
 async def health_check():
     """健康检查端点"""
+    from datetime import datetime
     return {
         "status": "healthy",
         "service": "bartender_print",
-        "timestamp": "2024-01-01T00:00:00"  # TODO: 使用真实时间戳
+        "timestamp": datetime.now().isoformat()
     }
 
 
@@ -80,18 +83,14 @@ async def api_info():
         "endpoints": [
             f"GET  {settings.API_V1_STR}/info - API信息",
             f"POST {settings.API_V1_STR}/print - 打印标签",
-            f"GET  {settings.API_V1_STR}/templates - 模板列表",
-            # TODO: 添加更多端点
+            f"GET  {settings.API_V1_STR}/files - 文件列表",
+            f"GET  {settings.API_V1_STR}/status/{{filename}} - 文件状态",
         ]
     }
 
 
-# 注意：这里暂时不导入具体的API路由
-# 导入API路由
-from app.api import print as print_api
 # 注册打印API路由
 app.include_router(print_api.router, prefix=settings.API_V1_STR)
-# 将在后续开发中逐步添加
 
 
 if __name__ == "__main__":

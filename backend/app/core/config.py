@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
-from typing import List, Optional
+from typing import List, Optional, Union
+from pydantic import Field, validator
+import json
 
 
 class Settings(BaseSettings):
@@ -34,9 +36,38 @@ class Settings(BaseSettings):
     # Redis配置
     REDIS_URL: Optional[str] = "redis://localhost:6379"
     
+    # 日志配置
+    LOG_LEVEL: str = "INFO"
+    LOG_FILE: Optional[str] = "logs/app.log"
+    
+    # 开发/测试模式
+    DEBUG: bool = True
+    ENVIRONMENT: str = "development"
+    
+    # 验证CORS配置
+    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            # 如果是字符串，尝试解析JSON
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # 如果不是JSON，按逗号分割
+                return [origin.strip() for origin in v.split(",") if origin.strip()]
+        elif isinstance(v, list):
+            return v
+        return v
+    
+    @validator("DEBUG", pre=True)
+    def parse_debug(cls, v):
+        if isinstance(v, str):
+            return v.lower() in ("true", "1", "yes", "on")
+        return bool(v)
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"  # 忽略额外的环境变量，不抛出错误
 
 
 # 创建全局配置实例

@@ -23,6 +23,3 @@ pyautogui==0.9.54
 # 工具
 loguru==0.7.2
 python-dotenv==1.0.0
-
-# CORS
-fastapi.middleware.cors==0.104.1
