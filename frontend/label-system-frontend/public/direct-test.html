@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路由直接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #303133;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #909399;
+            margin-bottom: 30px;
+        }
+        .test-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .test-link {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #ecf5ff;
+            color: #409eff;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #409eff;
+            transition: all 0.3s;
+        }
+        .test-link:hover {
+            background: #409eff;
+            color: white;
+        }
+        .debug-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+        .debug-btn {
+            padding: 8px 16px;
+            background: #67c23a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>直接路由测试</h1>
+        <p class="subtitle">绕过Vue Router直接测试页面加载</p>
+        
+        <div class="test-links">
+            <a href="/" class="test-link">首页 (/)</a>
+            <a href="/acceptance-test" class="test-link">验收测试</a>
+            <a href="/component-demo" class="test-link">组件演示</a>
+            <a href="/label-editor" class="test-link">标签编辑器</a>
+            <a href="/print-queue" class="test-link">打印队列</a>
+            <a href="/device-status" class="test-link">设备状态</a>
+            <a href="/data-chart" class="test-link">数据图表</a>
+            <a href="/router-debug" class="test-link">路由调试</a>
+            <a href="/route-test" class="test-link">路由测试</a>
+            <a href="/not-exist-404" class="test-link">404页面测试</a>
+        </div>
+        
+        <div class="debug-section">
+            <h3>调试工具</h3>
+            <button class="debug-btn" onclick="checkRouter()">检查路由状态</button>
+            <button class="debug-btn" onclick="clearConsole()">清空控制台</button>
+            <button class="debug-btn" onclick="reloadPage()">重新加载页面</button>
+        </div>
+    </div>
+    
+    <script>
+        function checkRouter() {
+            console.log('=== 路由状态检查 ===')
+            console.log('当前URL:', window.location.href)
+            console.log('路径:', window.location.pathname)
+            
+            if (window.__VUE_ROUTER__) {
+                console.log('✅ Vue Router实例存在')
+                console.log('当前路由:', window.__VUE_ROUTER__.currentRoute.value)
+            } else {
+                console.warn('❌ Vue Router实例不存在')
+            }
+        }
+        
+        function clearConsole() {
+            console.clear()
+            console.log('控制台已清空')
+        }
+        
+        function reloadPage() {
+            location.reload()
+        }
+        
+        // 监听控制台错误
+        const originalError = console.error
+        console.error = function(...args) {
+            const message = args.join(' ')
+            if (message.includes('has already been registered')) {
+                console.warn('🔍 检测到组件重复注册错误')
+            }
+            originalError.apply(console, args)
+        }
+    </script>
+</body>
+</html>
